@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Collective Runners · Running crew de Salvador</title>
+<meta name="description" content="Running crew de Salvador. Corre 100% gratuito, cultura, música e comunidade. #NinguémFicaPraTrás">
+<meta property="og:title" content="Collective Runners · Aquecendo as ruas de Salvador">
+<meta property="og:description" content="Corre 100% gratuito. Campo Grande, Pelourinho, Pituba, Farol. Ninguém fica pra trás.">
+<meta property="og:image" content="fotos/after-baile-corre/12.jpg">
+<meta name="theme-color" content="#0B0B0C">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23E8361A'/%3E%3Ctext x='32' y='42' font-size='26' text-anchor='middle' fill='white' font-family='Arial Black' font-style='italic'%3ECR%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,800;1,900&family=Barlow:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/base.css?v=20261124142551">
+<link rel="stylesheet" href="assets/site.css?v=20261124142551">
+</head>
+<body>
+
+<header class="topo" id="topo">
+  <div class="wrap">
+    <a class="marca" href="#inicio"><span class="selo">CR</span><b>Collective Runners</b></a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu">Menu</button>
+    <nav id="menu">
+      <a href="#agenda">Corres</a>
+      <a href="#frentes">Frentes</a>
+      <a href="#dossie">Dossiê</a>
+      <a href="#historia">História</a>
+      <a href="#loja">Loja</a>
+      <a class="btn" href="membro.html">Área do membro</a>
+    </nav>
+  </div>
+</header>
+
+<!-- CENA-ASSINATURA: do Campo Grande ao Pelourinho, ninguém fica pra trás -->
+<section class="cena" id="inicio" aria-label="Abertura">
+  <div class="cena-sticky">
+    <img class="cena-bg" src="fotos/after-out/01.jpg" alt="Pelotão reunido à noite no Campo Grande" fetchpriority="high">
+    <div class="cena-bg-veu"></div>
+
+    <svg class="rota" id="rota" viewBox="0 0 1000 1000" aria-hidden="true">
+      <path id="trilha" class="trilha" d="M190 850 C260 790 170 720 290 660 S480 640 450 545 S540 420 640 440 S720 330 750 270 S790 200 805 165"/>
+      <path id="feito" class="feito" d="M190 850 C260 790 170 720 290 660 S480 640 450 545 S540 420 640 440 S720 330 750 270 S790 200 805 165"/>
+      <circle class="pino" cx="190" cy="850" r="12"/>
+      <text x="215" y="905">CAMPO GRANDE</text>
+      <circle class="pino" cx="805" cy="165" r="12"/>
+      <text x="600" y="120">PELOURINHO</text>
+      <circle id="halo" class="halo" r="30"/>
+      <g id="pelotao"></g>
+    </svg>
+
+    <div class="cena-chegada" id="chegada"><img src="fotos/after-baile-corre/12.jpg" alt="O coletivo reunido na chegada, no Pelourinho"></div>
+
+    <div class="cena-hud" aria-hidden="true">
+      <span class="km" id="km">0.00</span>
+      <span>km · after night rnnrs</span>
+      <span id="ritmo">concentração · 19h</span>
+    </div>
+
+    <div class="frase" data-de="0" data-ate=".15">
+      <h1>19h.<br>Praça do<br>Campo Grande.</h1>
+      <p>Running crew de Salvador. Camisa preta ou branca, e chega no horário.</p>
+    </div>
+    <div class="frase" data-de=".17" data-ate=".36">
+      <h2>4 km de som<br>e asfalto.</h2>
+      <p>O corre é leve, o ritmo é confortável. A rua inteira escuta a gente passar.</p>
+    </div>
+    <div class="frase" data-de=".38" data-ate=".55">
+      <h2>Ei. Ficou<br>alguém<br>pra trás?</h2>
+      <p>O pelotão para. Ninguém segue até o último chegar.</p>
+    </div>
+    <div class="frase" data-de=".57" data-ate=".78">
+      <span class="grafite">#NinguémFica<br>PraTrás</span>
+    </div>
+    <div class="frase" data-de=".86" data-ate="1.01">
+      <h2>Pelourinho.<br>Todo mundo<br>junto.</h2>
+      <p>Corrida, cultura, música e comunidade. Nosso corre é 100% gratuito.</p>
+      <div class="acoes">
+        <a class="btn brasa" href="#agenda">Ver próximos corres</a>
+        <a class="btn vazado" id="ctaWpp1" href="#" target="_blank" rel="noopener">Entrar na comunidade</a>
+      </div>
+    </div>
+    <div class="rolar" id="rolar">role ↓</div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto" id="quem">
+  <div class="wrap">
+    <div>
+      <span class="tag brasa">Running crew in Salcity</span>
+      <h2 class="titulo sobe" style="margin-top:18px">A gente não<br>corre só.<br><em>A gente aquece<br>as ruas.</em></h2>
+      <p class="texto sobe">O Collective Runners junta <strong>corrida, cultura, música e comunidade</strong>. Sai do Campo Grande e termina em baile no Pelourinho. Tem corre das meninas, corre da criançada, corre de noite e encontro cultural no Farol. A regra é uma só: <strong>ninguém fica pra trás.</strong></p>
+    </div>
+    <img class="mascote" src="assets/mascote-corre.png" alt="Mascote do coletivo correndo com uma caixa de som">
+  </div>
+  <div class="wrap">
+    <div class="numeros">
+      <div><b>R$ 0</b><span>pra correr com a gente. Sempre.</span></div>
+      <div><b>4 km</b><span>o percurso dos encontros</span></div>
+      <div><b>10,6 mil</b><span>no Instagram @collectiverunners</span></div>
+      <div><b>2º ano</b><span>de Kids Runners</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- AGENDA -->
+<section class="agenda" id="agenda">
+  <div class="wrap cartaz">
+    <div>
+      <h2 class="titulo">Próximos<br>corres</h2>
+      <div class="sub">CLLTV RNNRS</div>
+      <p class="gratis">Encontro 100% gratuito.<br>Mais informações no <a href="#" id="linkInsta" target="_blank" rel="noopener">@collectiverunners</a></p>
+    </div>
+    <div class="folha" id="folha"></div>
+  </div>
+</section>
+
+<!-- FRENTES -->
+<section class="frentes" id="frentes">
+  <div class="wrap intro">
+    <h2 class="titulo">Um coletivo,<br>vários corres.</h2>
+    <p>Cada frente tem seu jeito. Todas saem do mesmo lugar: gente que quer ocupar Salvador correndo junto.</p>
+  </div>
+  <div class="trilho">
+    <article class="frente larga"><img src="fotos/after-baile-corre/05_t.jpg" alt="" loading="lazy"><div class="info"><h3>After Night Rnnrs</h3><p>Corre noturno do Campo Grande ao Pelourinho, com som no percurso e dj set na chegada.</p></div></article>
+    <article class="frente media"><img src="fotos/girls-moma/07_t.jpg" alt="" loading="lazy"><div class="info"><h3>CLLTV Girls</h3><p>Corre feito por e para mulheres. “Quando mulheres correm juntas, ninguém fica para trás.”</p></div></article>
+    <article class="frente estreita papel rosa"><div class="info"><h3>Outubro Rosa</h3><p>Manhã no Parque da Cidade lembrando a importância da prevenção do câncer de mama.</p></div><span class="grafite">juntaaas</span></article>
+    <article class="frente media"><img src="fotos/kids/01_t.jpg" alt="" loading="lazy"><div class="info"><h3>Kids Runners</h3><p>A rua também é lugar de brincar. Segundo ano seguido de corre pra criançada.</p></div></article>
+    <article class="frente larga"><img src="fotos/after-baile-festa/05_t.jpg" alt="" loading="lazy"><div class="info"><h3>Baile CLLTV</h3><p>A chegada é só o começo: Casa Cultural do Reggae, DJs e artistas convidados.</p></div></article>
+    <article class="frente estreita papel"><div class="info"><h3>Banho de mar &amp; Convida Crews</h3><p>Encontros com outras crews e o mergulho depois do corre. Tá tudo nos destaques do Instagram.</p></div><span class="grafite">salcity</span></article>
+  </div>
+</section>
+
+<!-- DOSSIÊ -->
+<section class="dossie" id="dossie">
+  <div class="wrap">
+    <div class="intro">
+      <h2 class="titulo">Dossiê</h2>
+      <p>Os rolos de cada corre. Toque numa foto pra ver grande. Membros veem o arquivo completo.</p>
+    </div>
+    <div id="rolos"></div>
+  </div>
+</section>
+
+<!-- HISTÓRIA -->
+<section class="historia" id="historia">
+  <div class="wrap">
+    <div>
+      <h2 class="titulo">A história<br>contada<br>pelos corres.</h2>
+      <p class="aviso">Marcos tirados do que o próprio coletivo publicou. O capítulo da fundação a coordenação escreve pelo painel.</p>
+    </div>
+    <div class="percurso">
+      <div class="ponto sobe"><span class="quando">2025</span><h3>O primeiro Kids Runners</h3><p>O coletivo faz a primeira ação pensada só para a criançada. Em 2026 ela volta, “pelo segundo ano consecutivo”.</p></div>
+      <div class="ponto sobe"><span class="quando">Outubro de 2026</span><h3>Kids Runners, 2ª edição</h3><p>Diversão, brincadeira e movimento, com corealização de @doca1ssa. Correr vai muito além de cruzar uma linha de chegada.</p><img src="fotos/kids/01_t.jpg" alt="Kids Runners reunidos com as bandeiras do coletivo" loading="lazy"></div>
+      <div class="ponto sobe"><span class="quando">Outubro de 2026</span><h3>Outubro Rosa no Parque da Cidade</h3><p>Corre das meninas com a MOMA Cookie Lab, falando de cuidado, prevenção e diagnóstico precoce.</p><img src="fotos/outubro-rosa/06_t.jpg" alt="Corredoras na trilha do Parque da Cidade" loading="lazy"></div>
+      <div class="ponto sobe"><span class="quando">24 de outubro de 2026</span><h3>Nasce o After Night Rnnrs</h3><p>Saída do Campo Grande, chegada na Praça Cultural do Reggae, no Pelourinho, com dj set de @djakani. Corrida, cultura, música e comunidade na mesma noite.</p><img src="fotos/after-out/02_t.jpg" alt="Chegada na Casa Cultural do Reggae" loading="lazy"></div>
+      <div class="ponto sobe"><span class="quando">15 de novembro de 2026</span><h3>CLLTV Girls x MOMA</h3><p>Corre feminino de 4 km na Pituba, com camiseta exclusiva da parceria em peças limitadas.</p><img src="fotos/girls-moma/05_t.jpg" alt="Corredora com a camiseta MOMA &amp; Collective" loading="lazy"></div>
+      <div class="ponto sobe"><span class="quando">21 de novembro de 2026</span><h3>After Night — Edição Baile</h3><p>4 km com som no percurso todo e a noite fechando na Casa Cultural do Reggae, com seis DJs e artistas convidados.</p><img src="fotos/after-baile-festa/01_t.jpg" alt="Baile na Casa Cultural do Reggae" loading="lazy"></div>
+      <div class="ponto fim sobe"><span class="quando">Próximo ponto</span><h3 id="proxHist">Farol da Barra</h3><p>O percurso continua. A próxima parada está na agenda.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- DICAS (do cartaz deles) -->
+<section class="dicas" aria-label="Dicas essenciais">
+  <div class="wrap">
+    <h2>dicas essenciais</h2>
+    <div class="col">
+      <div class="dica"><i>⌚</i>Não se atrase</div>
+      <div class="dica"><i>👕</i>Vista camisa<br>preta ou branca</div>
+    </div>
+    <img src="assets/mascote-dj.png" alt="Mascote do coletivo no toca-discos" loading="lazy">
+    <div class="col">
+      <div class="dica"><i>🎧</i>Evite fone<br>de ouvido</div>
+      <div class="dica"><i>👟</i>Ritmo<br>confortável</div>
+    </div>
+    <div class="rodape">dj set<small>no final do percurso</small></div>
+  </div>
+</section>
+
+<!-- LOJA -->
+<section class="loja" id="loja">
+  <div class="wrap">
+    <div class="intro">
+      <h2 class="titulo">Vestir<br>o corre.</h2>
+      <p>A lojinha do coletivo está nascendo. As peças entram aqui primeiro, e quem está na lista de espera fica sabendo antes.</p>
+    </div>
+    <div class="vitrine" id="vitrine"></div>
+  </div>
+</section>
+
+<!-- CUPONS -->
+<section class="cupons">
+  <div class="wrap">
+    <h2 class="titulo">Cupons da crew</h2>
+    <div class="tickets" id="tickets"></div>
+    <div class="apoios" id="apoios" aria-label="Parceiros e apoios"></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cola" id="cola">
+  <div class="wrap">
+    <h2 class="titulo">Cola<br><span>no corre.</span></h2>
+    <p>Entra na comunidade do WhatsApp, segue no Strava e aparece no próximo encontro. Não precisa ser rápido. Precisa chegar.</p>
+    <div class="acoes">
+      <a class="btn" id="ctaWpp2" href="#" target="_blank" rel="noopener">Comunidade no WhatsApp</a>
+      <a class="btn vazado" id="ctaStrava" href="#" target="_blank" rel="noopener">Strava</a>
+      <a class="btn vazado" id="ctaInsta" href="#" target="_blank" rel="noopener">Instagram</a>
+      <a class="btn vazado" id="ctaTiktok" href="#" target="_blank" rel="noopener">TikTok</a>
+    </div>
+  </div>
+  <img class="mascote" src="assets/mascote-corre.png" alt="" loading="lazy">
+</section>
+
+<footer class="rodape-site">
+  <div class="wrap">
+    <span>Collective Runners · Salvador, Bahia · #NinguémFicaPraTrás</span>
+    <span><a href="membro.html">Área do membro</a> · <a href="admin.html">Painel master</a> · feito por um membro do coletivo com a zync hub</span>
+  </div>
+</footer>
+
+<!-- Lista de espera da loja -->
+<div class="modal" id="modalEspera" role="dialog" aria-modal="true" aria-labelledby="meTit">
+  <form class="caixa" id="formEspera">
+    <button type="button" class="fechar" aria-label="Fechar">×</button>
+    <h3 id="meTit">Me avisa</h3>
+    <p style="margin-bottom:16px" id="mePeca"></p>
+    <div class="campo"><label for="meNome">Nome</label><input id="meNome" required autocomplete="name"></div>
+    <div class="campo"><label for="meWpp">WhatsApp</label><input id="meWpp" required inputmode="tel" autocomplete="tel" placeholder="(71) 9 0000-0000"></div>
+    <div class="campo"><label for="meTam">Tamanho (se for roupa)</label><select id="meTam"><option>—</option><option>PP</option><option>P</option><option>M</option><option>G</option><option>GG</option></select></div>
+    <button class="btn brasa" style="width:100%">Entrar na lista</button>
+  </form>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<script src="assets/dados.js?v=20261124142551"></script>
+<script src="assets/site.js?v=20261124142551"></script>
+</body>
+</html>

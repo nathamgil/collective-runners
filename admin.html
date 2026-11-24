@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel master · Collective Runners</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#111111">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23111'/%3E%3Ctext x='32' y='42' font-size='26' text-anchor='middle' fill='%23E8361A' font-family='Arial Black' font-style='italic'%3ECR%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,800;1,900&family=Barlow:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/base.css?v=20261124142551">
+<link rel="stylesheet" href="assets/app.css?v=20261124142551">
+</head>
+<body class="app">
+
+<section class="entrada" id="telaEntrada" hidden>
+  <div class="foto"><img src="fotos/after-out/01.jpg" alt="Pelotão no Campo Grande"><span>coordenação</span></div>
+  <div class="form">
+    <a class="marca" href="index.html"><span class="selo">CR</span><b>Collective Runners</b></a>
+    <h1>Painel<br>master</h1>
+    <p>Comunicados, agenda, dossiê de fotos, membros, loja e parceiros. Tudo que muda aqui aparece no site.</p>
+    <form id="formPin">
+      <div class="campo"><label for="pin">PIN da coordenação</label><input id="pin" type="password" inputmode="numeric" required autocomplete="current-password"></div>
+      <p class="erro" id="pErro" role="alert"></p>
+      <button class="btn brasa" style="width:100%">Entrar</button>
+    </form>
+    <div class="dica-demo">Demonstração: o PIN é <b>2026</b>.</div>
+  </div>
+</section>
+
+<div id="telaApp" hidden>
+  <header class="app-topo">
+    <div class="wrap">
+      <a class="marca" href="index.html"><span class="selo">CR</span><b>Painel master</b></a>
+      <div class="quem"><a href="index.html" target="_blank" style="font:700 12px var(--f-mono);text-transform:uppercase">ver site ↗</a><button id="sair">Sair</button></div>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="abas" role="tablist">
+      <button role="tab" data-aba="geral" aria-selected="true">Visão geral</button>
+      <button role="tab" data-aba="comunicados" aria-selected="false">Comunicados</button>
+      <button role="tab" data-aba="agenda" aria-selected="false">Agenda</button>
+      <button role="tab" data-aba="dossie" aria-selected="false">Dossiê</button>
+      <button role="tab" data-aba="membros" aria-selected="false">Membros <span class="n" id="nPend"></span></button>
+      <button role="tab" data-aba="loja" aria-selected="false">Loja</button>
+      <button role="tab" data-aba="parceiros" aria-selected="false">Parceiros</button>
+      <button role="tab" data-aba="config" aria-selected="false">Config</button>
+    </div>
+
+    <section class="painel-sec" data-sec="geral">
+      <div class="kpis" id="kpis"></div>
+      <div class="duas">
+        <div class="caixa-p"><h3>Próximo corre</h3><div id="geralProx"></div></div>
+        <div class="caixa-p"><h3>Pra resolver</h3><ul class="lista-simples" id="geralPend"></ul></div>
+      </div>
+    </section>
+
+    <section class="painel-sec" data-sec="comunicados" hidden>
+      <div class="cab-sec"><h2>Comunicados</h2><p>“Público” aparece no site e no mural. Desmarcado, só os membros veem. “Fixar” deixa no topo do mural.</p></div>
+      <div class="duas">
+        <form class="caixa-p" id="formCom">
+          <h3 id="comTit">Novo comunicado</h3>
+          <input type="hidden" id="comId">
+          <div class="campo"><label for="comTitulo">Título</label><input id="comTitulo" required maxlength="90"></div>
+          <div class="campo"><label for="comTexto">Texto</label><textarea id="comTexto" required></textarea></div>
+          <div class="form-grade">
+            <div class="campo"><label for="comTag">Etiqueta</label><select id="comTag"><option>Aviso</option><option>Agenda</option><option>Dossiê</option><option>Loja</option><option>Membros</option><option>Parceria</option></select></div>
+            <div class="campo"><label for="comData">Data</label><input id="comData" type="date" required></div>
+          </div>
+          <label class="check"><input type="checkbox" id="comPub" checked> Público (site + mural)</label>
+          <label class="check" style="margin:8px 0 16px"><input type="checkbox" id="comFixo"> Fixar no topo</label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn brasa">Publicar</button><button type="button" class="btn vazado" id="comLimpar">Limpar</button></div>
+        </form>
+        <div id="listaCom" style="display:grid;gap:12px;align-content:start"></div>
+      </div>
+    </section>
+
+    <section class="painel-sec" data-sec="agenda" hidden>
+      <div class="cab-sec"><h2>Agenda</h2><p>Os corres aparecem no cartaz do site, na área do membro e na história.</p></div>
+      <form class="caixa-p" id="formCorre" style="margin-bottom:22px">
+        <h3 id="corTit">Novo corre</h3><input type="hidden" id="corId">
+        <div class="form-grade">
+          <div class="campo"><label for="corNome">Nome</label><input id="corNome" required></div>
+          <div class="campo"><label for="corTipo">Tipo</label><select id="corTipo"><option>Noturno</option><option>Girls</option><option>Kids</option><option>Cultural</option><option>Collab</option><option>Banho de mar</option></select></div>
+          <div class="campo"><label for="corData">Data</label><input id="corData" type="date" required></div>
+          <div class="campo"><label for="corHora">Hora</label><input id="corHora" type="time"></div>
+          <div class="campo inteiro"><label for="corLocal">Local / percurso</label><input id="corLocal" required></div>
+          <div class="campo"><label for="corKm">Distância (km)</label><input id="corKm" type="number" step="0.1" min="0"></div>
+          <div class="campo"><label for="corAlbum">Álbum de fotos</label><select id="corAlbum"></select></div>
+          <div class="campo inteiro"><label for="corObs">Recado (dress code, ingresso, parceiro)</label><input id="corObs"></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn brasa">Salvar corre</button><button type="button" class="btn vazado" id="corLimpar">Limpar</button></div>
+      </form>
+      <div class="rolagem-x"><table class="tabela" id="tabCorres"></table></div>
+    </section>
+
+    <section class="painel-sec" data-sec="dossie" hidden>
+      <div class="cab-sec"><h2>Dossiê</h2><p>Crie um álbum por corre e suba as fotos. Álbum com criança fica “só membros”.</p></div>
+      <form class="caixa-p" id="formAlbum" style="margin-bottom:22px">
+        <h3>Novo álbum</h3>
+        <div class="form-grade">
+          <div class="campo"><label for="alTitulo">Título</label><input id="alTitulo" required></div>
+          <div class="campo"><label for="alData">Data</label><input id="alData" type="date" required></div>
+          <div class="campo"><label for="alLocal">Local</label><input id="alLocal"></div>
+          <div class="campo"><label for="alCredito">Crédito do fotógrafo</label><input id="alCredito" placeholder="@fotografo"></div>
+        </div>
+        <label class="check" style="margin-bottom:14px"><input type="checkbox" id="alPub" checked> Público no site</label>
+        <button class="btn brasa">Criar álbum</button>
+      </form>
+      <div id="listaAlbuns" style="display:grid;gap:18px"></div>
+    </section>
+
+    <section class="painel-sec" data-sec="membros" hidden>
+      <div class="cab-sec"><h2>Membros</h2><p>Quem entrou pela área do membro. Aprove, mude o papel ou bloqueie.</p></div>
+      <div class="rolagem-x"><table class="tabela" id="tabMembros"></table></div>
+    </section>
+
+    <section class="painel-sec" data-sec="loja" hidden>
+      <div class="cab-sec"><h2>Loja</h2><p>O começo do marketplace do coletivo: cadastre a peça, defina status e preço, acompanhe reservas e lista de espera.</p></div>
+      <form class="caixa-p" id="formProd" style="margin-bottom:22px">
+        <h3 id="prodTit">Nova peça</h3><input type="hidden" id="prodId">
+        <div class="form-grade">
+          <div class="campo"><label for="prodNome">Nome</label><input id="prodNome" required></div>
+          <div class="campo"><label for="prodStatus">Status</label><select id="prodStatus"><option value="em-breve">Em breve</option><option value="disponivel">Disponível</option><option value="esgotado">Esgotado</option></select></div>
+          <div class="campo"><label for="prodPreco">Preço (R$)</label><input id="prodPreco" type="number" step="0.01" min="0" placeholder="vazio = a definir"></div>
+          <div class="campo"><label for="prodEstoque">Estoque</label><input id="prodEstoque" type="number" min="0" value="0"></div>
+          <div class="campo inteiro"><label for="prodDesc">Descrição</label><input id="prodDesc"></div>
+          <div class="campo inteiro"><label for="prodImg">Foto (arquivo)</label><input id="prodImg" type="file" accept="image/*"></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn brasa">Salvar peça</button><button type="button" class="btn vazado" id="prodLimpar">Limpar</button></div>
+      </form>
+      <div class="rolagem-x" style="margin-bottom:28px"><table class="tabela" id="tabProd"></table></div>
+      <h3 class="titulo" style="font-size:34px;margin-bottom:12px">Reservas e lista de espera</h3>
+      <div class="rolagem-x"><table class="tabela" id="tabEspera"></table></div>
+    </section>
+
+    <section class="painel-sec" data-sec="parceiros" hidden>
+      <div class="cab-sec"><h2>Parceiros</h2><p>Cupons aparecem no site como ticket destacável.</p></div>
+      <form class="caixa-p" id="formParc" style="margin-bottom:22px">
+        <div class="form-grade">
+          <div class="campo"><label for="paNome">Parceiro</label><input id="paNome" required></div>
+          <div class="campo"><label for="paCupom">Cupom</label><input id="paCupom" required></div>
+          <div class="campo"><label for="paDesc">Desconto</label><input id="paDesc" required placeholder="10%"></div>
+          <div class="campo"><label for="paLink">Link</label><input id="paLink" type="url" required placeholder="https://"></div>
+        </div>
+        <button class="btn brasa">Adicionar cupom</button>
+      </form>
+      <div class="rolagem-x"><table class="tabela" id="tabParc"></table></div>
+    </section>
+
+    <section class="painel-sec" data-sec="config" hidden>
+      <div class="cab-sec"><h2>Config</h2><p>Links que o site usa e os códigos de acesso.</p></div>
+      <form class="caixa-p" id="formCfg">
+        <div class="form-grade">
+          <div class="campo"><label for="cfWpp">Comunidade WhatsApp</label><input id="cfWpp" type="url"></div>
+          <div class="campo"><label for="cfStrava">Strava</label><input id="cfStrava" type="url"></div>
+          <div class="campo"><label for="cfInsta">Instagram</label><input id="cfInsta" type="url"></div>
+          <div class="campo"><label for="cfTiktok">TikTok</label><input id="cfTiktok" type="url"></div>
+          <div class="campo"><label for="cfCod">Código de entrada dos membros</label><input id="cfCod" required></div>
+          <div class="campo"><label for="cfPin">PIN do painel</label><input id="cfPin" required></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn brasa">Salvar</button><button type="button" class="btn vazado" id="resetar">Restaurar dados da demo</button></div>
+      </form>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<script src="assets/dados.js?v=20261124142551"></script>
+<script src="assets/admin.js?v=20261124142551"></script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Área do membro · Collective Runners</title>
+<meta name="theme-color" content="#111111">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23E8361A'/%3E%3Ctext x='32' y='42' font-size='26' text-anchor='middle' fill='white' font-family='Arial Black' font-style='italic'%3ECR%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,800;1,900&family=Barlow:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/base.css?v=20261124142551">
+<link rel="stylesheet" href="assets/app.css?v=20261124142551">
+</head>
+<body class="app">
+
+<!-- Entrada -->
+<section class="entrada" id="telaEntrada" hidden>
+  <div class="foto"><img src="fotos/after-baile-corre/09.jpg" alt="Corredores à noite em Salvador"><span>tô no corre</span></div>
+  <div class="form">
+    <a class="marca" href="index.html"><span class="selo">CR</span><b>Collective Runners</b></a>
+    <h1>Área do<br>membro</h1>
+    <p>Mural de comunicados, confirmação de presença, o arquivo completo de fotos e a sua carteirinha da crew.</p>
+    <form id="formEntrar">
+      <div class="campo"><label for="eNome">Seu nome</label><input id="eNome" required autocomplete="name"></div>
+      <div class="campo"><label for="eEmail">E-mail</label><input id="eEmail" type="email" required autocomplete="email"></div>
+      <div class="campo"><label for="eCod">Código do coletivo</label><input id="eCod" required autocomplete="off" placeholder="o código que rola no grupo"></div>
+      <p class="erro" id="eErro" role="alert"></p>
+      <button class="btn brasa" style="width:100%">Entrar</button>
+    </form>
+    <div class="dica-demo">Demonstração: o código é <b>CLLTV</b>. Use <b>demo@clltv.run</b> para entrar como um membro que já tem histórico.</div>
+  </div>
+</section>
+
+<!-- App -->
+<div id="telaApp" hidden>
+  <header class="app-topo">
+    <div class="wrap">
+      <a class="marca" href="index.html"><span class="selo">CR</span><b>Collective Runners</b></a>
+      <div class="quem"><span id="quemNome"></span><button id="sair">Sair</button></div>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="abas" role="tablist">
+      <button role="tab" data-aba="mural" aria-selected="true">Mural <span class="n" id="nMural"></span></button>
+      <button role="tab" data-aba="agenda" aria-selected="false">Agenda</button>
+      <button role="tab" data-aba="dossie" aria-selected="false">Dossiê</button>
+      <button role="tab" data-aba="carteira" aria-selected="false">Carteirinha</button>
+    </div>
+
+    <section class="painel-sec" data-sec="mural">
+      <div class="cab-sec"><h2>Mural</h2><p>Comunicados da coordenação. Os marcados “Membros” só aparecem aqui dentro.</p></div>
+      <div class="mural" id="mural"></div>
+    </section>
+
+    <section class="painel-sec" data-sec="agenda" hidden>
+      <div class="cab-sec"><h2>Agenda</h2><p>Confirma que vai colar: ajuda a organizar puxadores e quem fecha o pelotão. Nos que já rolaram, marca que você foi.</p></div>
+      <div class="corres" id="corres"></div>
+    </section>
+
+    <section class="painel-sec" data-sec="dossie" hidden>
+      <div class="cab-sec"><h2 id="dosTit">Dossiê</h2><p id="dosSub">Todos os rolos, inclusive os que só os membros veem.</p></div>
+      <button class="btn vazado peq" id="voltarAlbuns" hidden style="margin-bottom:16px">← Todos os álbuns</button>
+      <div class="albuns" id="albuns"></div>
+      <div class="grade-fotos" id="gradeFotos" hidden></div>
+    </section>
+
+    <section class="painel-sec" data-sec="carteira" hidden>
+      <div class="cab-sec"><h2>Carteirinha</h2><p>Mostra no celular nos parceiros e nos encontros.</p></div>
+      <div class="carteira-area">
+        <div class="carteira" id="carteira"></div>
+        <div>
+          <div class="stats" id="stats"></div>
+          <div class="selos" id="selos"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<script src="assets/dados.js?v=20261124142551"></script>
+<script src="assets/membro.js?v=20261124142551"></script>
+</body>
+</html>
