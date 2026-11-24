@@ -147,13 +147,14 @@
   });
 
   /* ====== LOJA ====== */
-  const rot = { 'esgotado': ['Esgotado', ''], 'em-breve': ['Em breve', ''], 'disponivel': ['Disponível', 'brasa'] };
-  $('#vitrine').innerHTML = db.produtos.map(p => `
+  const rot = { 'esgotado': ['Esgotado', ''], 'em-breve': ['Em breve', ''], 'disponivel': ['Na loja', 'brasa'], 'drop': ['Drop', 'brasa'] };
+  const vendivel = p => (p.status === 'disponivel' || p.status === 'drop') && CR.estoque(p) > 0;
+  $('#vitrine').innerHTML = db.produtos.slice(0, 4).map(p => `
     <article class="peca">
-      <div class="foto"><img src="${p.img}" alt="" loading="lazy"><span class="tag ${rot[p.status]?.[1] || ''}">${rot[p.status]?.[0] || p.status}</span></div>
+      <div class="foto"><img src="${(p.imgs || [])[0]?.replace('.jpg', '_t.jpg') || ''}" alt="" loading="lazy"><span class="tag ${rot[p.status]?.[1] || ''}">${rot[p.status]?.[0] || p.status}${p.status === 'drop' && p.drop ? ' ' + CR.dataBR(p.drop.slice(0, 10)) : ''}</span></div>
       <div class="corpo"><h3>${CR.esc(p.nome)}</h3><p>${CR.esc(p.desc)}</p>
-      <span class="preco">${p.preco ? 'R$ ' + Number(p.preco).toFixed(2).replace('.', ',') : 'preço a definir'}</span>
-      <button class="btn ${p.status === 'disponivel' ? 'brasa' : 'vazado'} peq" data-peca="${p.id}">${p.status === 'disponivel' ? 'Quero essa' : 'Me avisa'}</button></div>
+      <span class="preco">${p.preco ? CR.reais(p.preco) : 'preço a definir'}</span>
+      ${vendivel(p) ? `<a class="btn brasa peq" href="loja.html#peca=${p.id}">Ver na loja</a>` : `<button class="btn vazado peq" data-peca="${p.id}">Me avisa</button>`}</div>
     </article>`).join('');
   const modal = $('#modalEspera'); let pecaSel = null;
   $('#vitrine').addEventListener('click', e => {

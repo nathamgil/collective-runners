@@ -16,7 +16,7 @@
   });
   $('#sair').addEventListener('click', () => { CR.sessao.sair('master'); iniciar(); });
 
-  const ABAS = ['geral', 'comunicados', 'agenda', 'dossie', 'membros', 'loja', 'parceiros', 'config'];
+  const ABAS = ['geral', 'comunicados', 'agenda', 'dossie', 'membros', 'pedidos', 'loja', 'parceiros', 'config'];
   function abrir(a) {
     if (!ABAS.includes(a)) a = 'geral';
     $$('.abas button').forEach(b => b.setAttribute('aria-selected', b.dataset.aba === a));
@@ -26,7 +26,7 @@
   $$('.abas button').forEach(b => b.addEventListener('click', () => abrir(b.dataset.aba)));
   document.addEventListener('click', e => { const g = e.target.closest('[data-ir]'); if (g) abrir(g.dataset.ir); });
 
-  function tudo() { geral(); comunicados(); corres(); albuns(); membros(); loja(); parceiros(); config(); }
+  function tudo() { geral(); comunicados(); corres(); albuns(); membros(); pedidos(); loja(); parceiros(); config(); }
 
   /* Visão geral */
   function geral() {
@@ -38,7 +38,7 @@
       <div class="kpi forte"><b>${conf}</b><span>confirmados no próximo</span></div>
       <div class="kpi"><b>${ativos}</b><span>membros ativos</span></div>
       <div class="kpi"><b>${db.albuns.reduce((s, a) => s + a.fotos.length, 0)}</b><span>fotos no dossiê</span></div>
-      <div class="kpi"><b>${db.listaEspera.length}</b><span>na lista da loja</span></div>`;
+      <div class="kpi"><b>${db.pedidos.filter(p => p.status === 'novo').length}</b><span>pedidos esperando Pix</span></div>`;
     $('#geralProx').innerHTML = prox ? `<p class="titulo" style="font-size:34px">${E(prox.nome)}</p>
       <p class="mono" style="margin:8px 0 14px">${CR.dataBR(prox.data, true)}${prox.hora ? ' · ' + prox.hora : ' · hora a definir'}<br>${E(prox.local)}</p>
       <p class="mono" style="font-size:13px">${(db.confirmacoes[prox.id] || []).map(id => E(db.membros.find(m => m.id === id)?.nome || '?')).join(', ') || 'Ninguém confirmou ainda.'}</p>
@@ -49,6 +49,8 @@
     if (prox && !prox.hora) itens.push(`<li><span>Horário do “${E(prox.nome)}” a definir</span><button class="btn peq" data-ir="agenda">Definir</button></li>`);
     const semAlbum = CR.passados().filter(c => !c.album);
     if (semAlbum.length) itens.push(`<li><span>${semAlbum.length} corre(s) passado(s) sem álbum</span><button class="btn peq" data-ir="dossie">Subir fotos</button></li>`);
+    const np = db.pedidos.filter(p => p.status === 'novo').length;
+    if (np) itens.push(`<li><span>${np} pedido(s) esperando confirmar o Pix</span><button class="btn peq" data-ir="pedidos">Ver</button></li>`);
     if (db.listaEspera.length) itens.push(`<li><span>${db.listaEspera.length} pessoa(s) na lista da loja</span><button class="btn peq" data-ir="loja">Ver</button></li>`);
     $('#geralPend').innerHTML = itens.join('') || '<li><span>Tudo em dia. ❤️‍🔥</span></li>';
   }
@@ -159,32 +161,90 @@
   });
   $('#tabMembros').addEventListener('change', e => { const s = e.target.closest('[data-m-papel]'); if (s) { db.membros.find(m => m.id === s.dataset.mPapel).papel = s.value; salvar('Papel atualizado.'); } });
 
-  /* Loja */
-  const ST = { 'em-breve': 'Em breve', 'disponivel': 'Disponível', 'esgotado': 'Esgotado' };
+  /* Pedidos */
+  let filtroPed = 'abertos';
+  const itensTxt = p => p.itens.map(i => `${i.qt}x ${E(db.produtos.find(x => x.id === i.p)?.nome || 'peça')} <span class="sub" style="display:inline">${[i.cor, i.tam].filter(Boolean).map(E).join(' · ')}</span>`).join('<br>');
+  function pedidos() {
+    const novos = db.pedidos.filter(p => p.status === 'novo').length;
+    $('#nPed').textContent = novos || ''; $('#nPed').hidden = !novos;
+    const validos = db.pedidos.filter(p => ['pago', 'separado', 'entregue'].includes(p.status));
+    const fat = validos.reduce((s, p) => s + p.total, 0), pecas = validos.reduce((s, p) => s + p.itens.reduce((a, i) => a + i.qt, 0), 0);
+    $('#kpisLoja').innerHTML = `
+      <div class="kpi forte"><b>${CR.reais(fat).replace('R$ ', 'R$')}</b><span>vendido (pago)</span></div>
+      <div class="kpi"><b>${novos}</b><span>esperando Pix</span></div>
+      <div class="kpi"><b>${db.pedidos.filter(p => p.status === 'pago' || p.status === 'separado').length}</b><span>pra entregar</span></div>
+      <div class="kpi"><b>${pecas}</b><span>peças vendidas</span></div>`;
+    const F = { abertos: 'Em aberto', novo: 'Aguardando Pix', pago: 'Pagos', separado: 'Separados', entregue: 'Entregues', cancelado: 'Cancelados', todos: 'Todos' };
+    $('#filtrosPed').innerHTML = Object.entries(F).map(([k, v]) => `<button data-fp="${k}" aria-pressed="${k === filtroPed}">${v}</button>`).join('');
+    const lista = [...db.pedidos].filter(p => filtroPed === 'todos' || (filtroPed === 'abertos' ? !['entregue', 'cancelado'].includes(p.status) : p.status === filtroPed)).sort((a, b) => b.data.localeCompare(a.data));
+    $('#tabPedidos').innerHTML = lista.length ? `<thead><tr><th>Pedido</th><th>Cliente</th><th>Itens</th><th>Total</th><th>Retirada</th><th>Status</th><th></th></tr></thead><tbody>${lista.map(p => `
+      <tr><td class="mono"><b>${p.id}</b><span class="sub">${CR.dataBR(p.data.slice(0, 10))} ${p.data.slice(11, 16)}</span>${p.avisouPagamento && p.status === 'novo' ? '<span class="tag brasa" style="margin-top:4px">disse que pagou</span>' : ''}</td>
+      <td>${E(p.nome)}<span class="sub">${E(p.wpp)}${p.membro ? ' · membro' : ''}</span></td>
+      <td style="font-size:14px">${itensTxt(p)}</td>
+      <td class="mono">${CR.reais(p.total)}${p.desconto ? `<span class="sub">−${CR.reais(p.desconto)} membro</span>` : ''}</td>
+      <td style="font-size:13px">${CR.ENTREGA[p.entrega] || p.entrega}</td>
+      <td><select class="st ${p.status}" data-ped-st="${p.id}">${Object.entries(CR.STATUS_PEDIDO).map(([k, v]) => `<option value="${k}"${k === p.status ? ' selected' : ''}>${v}</option>`).join('')}</select></td>
+      <td><a class="btn peq" target="_blank" rel="noopener" href="https://wa.me/55${p.wpp.replace(/\D/g, '').replace(/^55/, '')}?text=${encodeURIComponent(msgPedido(p))}">WhatsApp</a></td></tr>`).join('')}</tbody>`
+      : '<tbody><tr><td class="mono">Nenhum pedido aqui.</td></tr></tbody>';
+    const pc = CR.proximos()[0], ret = db.pedidos.filter(p => p.entrega === 'corre' && ['pago', 'separado'].includes(p.status));
+    $('#retirada').innerHTML = `<p class="mono" style="font-size:13px;margin-bottom:8px">${pc ? `${E(pc.nome)} · ${CR.dataBR(pc.data, true)} · ${E(pc.local)}` : 'Sem corre marcado'} · ${ret.length} pedido(s)</p>` +
+      (ret.map(p => `<div class="ret-linha"><div><b>${p.id} · ${E(p.nome)}</b><div style="font-size:14px">${itensTxt(p)}</div></div><span class="tag ${p.status === 'separado' ? '' : 'brasa'}">${p.status === 'separado' ? 'separado ✓' : 'separar'}</span></div>`).join('') || '<p class="mono" style="font-size:13px">Nada pra entregar no corre ainda.</p>');
+  }
+  function msgPedido(p) {
+    const n = p.nome.split(' ')[0];
+    const t = { novo: `Oi ${n}! Recebemos seu pedido ${p.id} na loja do Collective Runners (${CR.reais(p.total)}). Assim que o Pix cair a gente confirma por aqui.`, pago: `Oi ${n}! Pix do pedido ${p.id} confirmado. ${CR.ENTREGA[p.entrega]}, a gente te avisa.`, separado: `Oi ${n}! Seu pedido ${p.id} tá separado. ${CR.ENTREGA[p.entrega]}.`, entregue: `Valeu, ${n}! Pedido ${p.id} entregue. Te vejo no corre!`, cancelado: `Oi ${n}, o pedido ${p.id} foi cancelado. Qualquer coisa chama a gente.` };
+    return (t[p.status] || '') + ' ❤️‍🔥';
+  }
+  $('#filtrosPed').addEventListener('click', e => { const b = e.target.closest('[data-fp]'); if (b) { filtroPed = b.dataset.fp; pedidos(); } });
+  $('#tabPedidos').addEventListener('change', e => {
+    const s = e.target.closest('[data-ped-st]'); if (!s) return;
+    const p = db.pedidos.find(x => x.id === s.dataset.pedSt), antes = p.status, depois = s.value;
+    // cancelar devolve as peças pro estoque; reabrir reserva de novo
+    const mexe = sinal => p.itens.forEach(i => { const pr = db.produtos.find(x => x.id === i.p); if (pr && pr.tamanhos[i.tam] != null) pr.tamanhos[i.tam] += sinal * i.qt; });
+    if (depois === 'cancelado' && antes !== 'cancelado') mexe(1);
+    if (antes === 'cancelado' && depois !== 'cancelado') mexe(-1);
+    p.status = depois; salvar(`${p.id}: ${CR.STATUS_PEDIDO[depois]}.`);
+  });
+  $('#imprimirRet').addEventListener('click', () => window.print());
+
+  /* Peças */
+  const ST = { 'em-breve': 'Em breve', 'disponivel': 'Disponível', 'esgotado': 'Esgotado', 'drop': 'Drop' };
+  const tamsTxt = t => Object.entries(t || {}).map(([k, v]) => `${k}:${v}`).join(', ');
   function loja() {
-    $('#tabProd').innerHTML = `<thead><tr><th>Peça</th><th>Status</th><th>Preço</th><th>Estoque</th><th>Interessados</th><th></th></tr></thead><tbody>${db.produtos.map(p => `
-      <tr><td style="display:flex;gap:10px;align-items:center"><img src="${p.img}" alt="" style="width:44px;height:54px;object-fit:cover"><div><b>${E(p.nome)}</b><span class="sub">${E(p.desc)}</span></div></td>
-      <td>${ST[p.status]}</td><td class="mono">${p.preco ? 'R$ ' + Number(p.preco).toFixed(2).replace('.', ',') : 'a definir'}</td><td class="mono">${p.estoque}</td>
-      <td class="mono">${db.listaEspera.filter(x => x.peca === p.id).length}</td>
-      <td><div class="acoes"><button class="btn peq" data-p-ed="${p.id}">Editar</button><button class="btn vazado peq" data-p-del="${p.id}">Apagar</button></div></td></tr>`).join('')}</tbody>`;
-    $('#tabEspera').innerHTML = db.listaEspera.length ? `<thead><tr><th>Data</th><th>Nome</th><th>WhatsApp</th><th>Peça</th><th>Tam.</th><th>Tipo</th><th></th></tr></thead><tbody>${db.listaEspera.map(x => `
-      <tr><td class="mono">${CR.dataBR(x.data)}</td><td>${E(x.nome)}</td><td class="mono">${E(x.wpp)}</td><td>${E(db.produtos.find(p => p.id === x.peca)?.nome || '—')}</td><td>${E(x.tam)}</td><td>${x.tipo}</td>
-      <td><a class="btn peq" target="_blank" rel="noopener" href="https://wa.me/55${x.wpp.replace(/\D/g, '').replace(/^55/, '')}?text=${encodeURIComponent('Oi ' + x.nome.split(' ')[0] + '! Aqui é do Collective Runners, sobre a ' + (db.produtos.find(p => p.id === x.peca)?.nome || 'peça') + ' ❤️‍🔥')}">WhatsApp</a></td></tr>`).join('')}</tbody>`
+    $('#tabProd').innerHTML = `<thead><tr><th>Peça</th><th>Status</th><th>Preço</th><th>Estoque</th><th>Vendidas</th><th></th></tr></thead><tbody>${db.produtos.map(p => {
+      const vend = db.pedidos.filter(x => x.status !== 'cancelado').reduce((s, x) => s + x.itens.filter(i => i.p === p.id).reduce((a, i) => a + i.qt, 0), 0);
+      return `<tr><td style="display:flex;gap:10px;align-items:center"><img src="${(p.imgs || [])[0] || ''}" alt="" style="width:44px;height:54px;object-fit:cover"><div><b>${E(p.nome)}</b><span class="sub">${E(p.cat || '')}${p.limitada ? ' · limitada' : ''}</span></div></td>
+      <td>${ST[p.status] || p.status}${p.status === 'drop' && p.drop ? `<span class="sub">${CR.dataBR(p.drop.slice(0, 10))} ${p.drop.slice(11, 16)}</span>` : ''}</td>
+      <td class="mono">${p.preco ? CR.reais(p.preco) : 'a definir'}</td>
+      <td class="mono" style="font-size:13px">${CR.estoque(p)}<span class="sub">${E(tamsTxt(p.tamanhos))}</span></td>
+      <td class="mono">${vend}</td>
+      <td><div class="acoes"><button class="btn peq" data-p-ed="${p.id}">Editar</button><a class="btn vazado peq" href="loja.html#peca=${p.id}" target="_blank">Ver</a><button class="btn vazado peq" data-p-del="${p.id}">Apagar</button></div></td></tr>`;
+    }).join('')}</tbody>`;
+    $('#tabEspera').innerHTML = db.listaEspera.length ? `<thead><tr><th>Data</th><th>Nome</th><th>WhatsApp</th><th>Peça</th><th>Tam.</th><th></th></tr></thead><tbody>${db.listaEspera.map(x => `
+      <tr><td class="mono">${CR.dataBR(x.data)}</td><td>${E(x.nome)}</td><td class="mono">${E(x.wpp)}</td><td>${E(db.produtos.find(p => p.id === x.peca)?.nome || '—')}</td><td>${E(x.tam)}</td>
+      <td><a class="btn peq" target="_blank" rel="noopener" href="https://wa.me/55${x.wpp.replace(/\D/g, '').replace(/^55/, '')}?text=${encodeURIComponent('Oi ' + x.nome.split(' ')[0] + '! Aqui é do Collective Runners: a ' + (db.produtos.find(p => p.id === x.peca)?.nome || 'peça') + ' que você pediu pra avisar tá na loja ❤️‍🔥')}">Avisar</a></td></tr>`).join('')}</tbody>`
       : '<tbody><tr><td class="mono">Ninguém na lista ainda. O botão “Me avisa” do site alimenta esta tabela.</td></tr></tbody>';
   }
   function limparProd() { $('#formProd').reset(); $('#prodId').value = ''; $('#prodTit').textContent = 'Nova peça'; }
   $('#prodLimpar').addEventListener('click', limparProd);
   $('#formProd').addEventListener('submit', async e => {
     e.preventDefault();
-    const id = $('#prodId').value, arq = $('#prodImg').files[0];
-    const d = { nome: $('#prodNome').value.trim(), status: $('#prodStatus').value, preco: $('#prodPreco').value ? +$('#prodPreco').value : null, estoque: +$('#prodEstoque').value || 0, desc: $('#prodDesc').value.trim() };
-    if (arq) d.img = await reduzir(arq, 700);
-    if (id) Object.assign(db.produtos.find(p => p.id === id), d); else db.produtos.push({ id: CR.id('p'), img: d.img || 'fotos/after-baile-corre/03_t.jpg', ...d });
-    limparProd(); salvar('Peça salva. Já está na vitrine do site.');
+    const tams = {};
+    $('#prodTams').value.split(',').forEach(par => { const [k, v] = par.split(':').map(x => x && x.trim()); if (k) tams[k] = Math.max(0, parseInt(v) || 0); });
+    if (!Object.keys(tams).length) return toast('Informe o estoque, ex.: P:10, M:5');
+    const id = $('#prodId').value;
+    const d = { nome: $('#prodNome').value.trim(), cat: $('#prodCat').value.trim() || 'Outros', status: $('#prodStatus').value, drop: $('#prodDrop').value, preco: $('#prodPreco').value ? +$('#prodPreco').value : null, cores: $('#prodCores').value.split(',').map(x => x.trim()).filter(Boolean), tamanhos: tams, desc: $('#prodDesc').value.trim(), limitada: $('#prodLim').checked };
+    if (d.status === 'drop' && !d.drop) return toast('Drop precisa da data de abertura.');
+    const arqs = [...$('#prodImg').files];
+    if (arqs.length) d.imgs = await Promise.all(arqs.map(a => reduzir(a, 900)));
+    if (id) Object.assign(db.produtos.find(p => p.id === id), d);
+    else db.produtos.push({ id: CR.id('p'), imgs: d.imgs || ['fotos/loja/camiseta-costas.jpg'], ...d });
+    limparProd();
+    try { salvar('Peça salva. Já está na loja.'); } catch (err) { toast('Memória da demo cheia: use fotos menores.'); }
   });
   $('#tabProd').addEventListener('click', e => {
     const ed = e.target.closest('[data-p-ed]'), dl = e.target.closest('[data-p-del]');
-    if (ed) { const p = db.produtos.find(x => x.id === ed.dataset.pEd); $('#prodId').value = p.id; $('#prodNome').value = p.nome; $('#prodStatus').value = p.status; $('#prodPreco').value = p.preco ?? ''; $('#prodEstoque').value = p.estoque; $('#prodDesc').value = p.desc; $('#prodTit').textContent = 'Editando: ' + p.nome; $('#formProd').scrollIntoView({ behavior: 'smooth' }); }
+    if (ed) { const p = db.produtos.find(x => x.id === ed.dataset.pEd); $('#prodId').value = p.id; $('#prodNome').value = p.nome; $('#prodCat').value = p.cat || ''; $('#prodStatus').value = p.status; $('#prodDrop').value = p.drop || ''; $('#prodPreco').value = p.preco ?? ''; $('#prodCores').value = (p.cores || []).join(', '); $('#prodTams').value = tamsTxt(p.tamanhos); $('#prodDesc').value = p.desc; $('#prodLim').checked = !!p.limitada; $('#prodTit').textContent = 'Editando: ' + p.nome; $('#formProd').scrollIntoView({ behavior: 'smooth' }); }
     if (dl && confirm('Apagar esta peça?')) { db.produtos = db.produtos.filter(x => x.id !== dl.dataset.pDel); salvar('Peça apagada.'); }
   });
 
@@ -203,11 +263,11 @@
   /* Config */
   function config() {
     const c = db.config;
-    $('#cfWpp').value = c.whatsapp; $('#cfStrava').value = c.strava; $('#cfInsta').value = c.instagram; $('#cfTiktok').value = c.tiktok; $('#cfCod').value = c.codigoMembro; $('#cfPin').value = c.pinMaster;
+    $('#cfWpp').value = c.whatsapp; $('#cfStrava').value = c.strava; $('#cfInsta').value = c.instagram; $('#cfTiktok').value = c.tiktok; $('#cfCod').value = c.codigoMembro; $('#cfPin').value = c.pinMaster; $('#cfPix').value = c.pixChave || ''; $('#cfPixNome').value = c.pixNome || ''; $('#cfWppLoja').value = c.whatsLoja || ''; $('#cfDesc').value = c.descontoMembro ?? 0; $('#cfDemo').checked = !!c.lojaDemo;
   }
   $('#formCfg').addEventListener('submit', e => {
     e.preventDefault();
-    Object.assign(db.config, { whatsapp: $('#cfWpp').value.trim(), strava: $('#cfStrava').value.trim(), instagram: $('#cfInsta').value.trim(), tiktok: $('#cfTiktok').value.trim(), codigoMembro: $('#cfCod').value.trim(), pinMaster: $('#cfPin').value.trim() });
+    Object.assign(db.config, { whatsapp: $('#cfWpp').value.trim(), strava: $('#cfStrava').value.trim(), instagram: $('#cfInsta').value.trim(), tiktok: $('#cfTiktok').value.trim(), codigoMembro: $('#cfCod').value.trim(), pinMaster: $('#cfPin').value.trim(), pixChave: $('#cfPix').value.trim(), pixNome: $('#cfPixNome').value.trim() || 'COLLECTIVE RUNNERS', whatsLoja: $('#cfWppLoja').value.replace(/\D/g, ''), descontoMembro: +$('#cfDesc').value || 0, lojaDemo: $('#cfDemo').checked });
     salvar('Config salva.');
   });
   $('#resetar').addEventListener('click', () => { if (confirm('Voltar tudo para os dados originais da demo?')) { CR.resetar(); db = CR.db; tudo(); toast('Demo restaurada.'); } });

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Loja · Collective Runners</title>
+<meta name="description" content="A loja do Collective Runners: camisetas, collabs e acessórios da crew. Membros compram antes e pagam menos.">
+<meta property="og:image" content="fotos/loja/camiseta-costas.jpg">
+<meta name="theme-color" content="#111111">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23E8361A'/%3E%3Ctext x='32' y='42' font-size='26' text-anchor='middle' fill='white' font-family='Arial Black' font-style='italic'%3ECR%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,800;1,900&family=Barlow:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/base.css?v=20261124152021">
+<link rel="stylesheet" href="assets/loja.css?v=20261124152021">
+</head>
+<body>
+
+<header class="loja-topo">
+  <div class="wrap">
+    <a class="marca" href="index.html"><span class="selo">CR</span><b>Loja CLLTV</b></a>
+    <nav>
+      <a class="so-desk" href="index.html">Site</a>
+      <a class="so-desk" id="linkMembro" href="membro.html">Entrar</a>
+      <button class="btn-sacola" id="abrirSacola" aria-label="Abrir sacola">Sacola <b id="nSacola">0</b></button>
+    </nav>
+  </div>
+</header>
+<div class="aviso-demo" id="avisoDemo" hidden>Loja em demonstração · preços, estoque e chave Pix são de exemplo</div>
+
+<section class="drop" id="drop" hidden></section>
+
+<section class="como" aria-label="Como funciona">
+  <div class="wrap">
+    <div class="p"><b><i>1.</i> Escolhe a peça</b>Tamanho, cor, quantidade. Membro logado já vê o preço com desconto.</div>
+    <div class="p"><b><i>2.</i> Paga no Pix</b>QR Code e copia-e-cola na hora. Sem cadastro, sem taxa.</div>
+    <div class="p"><b><i>3.</i> Pega no corre</b>Retira no próximo encontro, direto com a coordenação. Ninguém fica sem a sua.</div>
+  </div>
+</section>
+
+<section class="catalogo">
+  <div class="wrap">
+    <div class="cat-cab">
+      <h2>Vestir<br>o corre.</h2>
+      <div class="filtros" id="filtros" role="group" aria-label="Filtrar por categoria"></div>
+    </div>
+    <div class="grade-loja" id="grade"></div>
+  </div>
+</section>
+
+<footer class="rodape-site" style="background:var(--tinta);color:#bdb8b0;padding:34px 0;font:400 13px/1.6 var(--f-mono)">
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap">
+    <span>Loja do Collective Runners · o dinheiro das peças volta pro corre</span>
+    <span><a href="#" id="linkPedido" style="color:#fff">Acompanhar meu pedido</a> · <a href="index.html" style="color:#fff">Voltar pro site</a></span>
+  </div>
+</footer>
+
+<div class="veu" id="veu"></div>
+
+<!-- Gaveta da peça -->
+<aside class="gaveta" id="gPeca" aria-label="Detalhes da peça" aria-hidden="true">
+  <div class="g-cab"><h2>Peça</h2><button data-fechar aria-label="Fechar">×</button></div>
+  <div class="g-corpo" id="pecaCorpo"></div>
+  <div class="g-pe" id="pecaPe"></div>
+</aside>
+
+<!-- Gaveta da sacola / checkout -->
+<aside class="gaveta" id="gSacola" aria-label="Sacola" aria-hidden="true">
+  <div class="g-cab"><h2 id="sacTit">Sacola</h2><button data-fechar aria-label="Fechar">×</button></div>
+  <div class="g-corpo" id="sacCorpo"></div>
+  <div class="g-pe" id="sacPe"></div>
+</aside>
+
+<div class="toast" id="toast" role="status"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="assets/dados.js?v=20261124152021"></script>
+<script src="assets/loja.js?v=20261124152021"></script>
+</body>
+</html>

@@ -12,7 +12,7 @@
   });
 
   const SEMENTE = {
-    versao: 1,
+    versao: 2,
     config: {
       whatsapp: 'https://chat.whatsapp.com/Gn3nKlCwszD1AELlvFB6Aq',
       strava: 'https://strava.app.link/lPLT9PJaHWb',
@@ -20,7 +20,13 @@
       tiktok: 'https://www.tiktok.com/@collectiverunners',
       ingressos: 'https://shotgun.live/pt-br/events/baile-collective',
       pinMaster: '2026',
-      codigoMembro: 'CLLTV'
+      codigoMembro: 'CLLTV',
+      pixChave: 'demo@collectiverunners.com.br',
+      pixNome: 'COLLECTIVE RUNNERS',
+      pixCidade: 'SALVADOR',
+      whatsLoja: '',
+      lojaDemo: true,
+      descontoMembro: 10
     },
     corres: [
       { id: 'c1', data: '2026-10-24', hora: '19:00', nome: 'After Night Rnnrs', tipo: 'Noturno', local: 'Campo Grande → Pça. Cultural do Reggae, Pelourinho', km: 4, obs: 'Camisa branca ou preta. Dj set de @djakani na chegada.', album: 'after-out' },
@@ -43,10 +49,22 @@
       { id: 'kids', titulo: 'Kids Runners — 2ª edição', data: '2026-10-13', local: 'Salvador', credito: 'corealização @doca1ssa', publico: false, fotos: fotos('kids', 12) }
     ],
     produtos: [
-      { id: 'p1', nome: 'Camiseta MOMA & Collective', desc: 'Edição limitada da collab com a MOMA Cookie Lab.', preco: null, status: 'esgotado', estoque: 0, img: 'fotos/girls-moma/10_t.jpg' },
-      { id: 'p2', nome: 'Camiseta CLLTV RNNRS', desc: 'A camisa do corre. Preta ou branca.', preco: null, status: 'em-breve', estoque: 0, img: 'fotos/after-baile-corre/03_t.jpg' },
-      { id: 'p3', nome: 'Bandeira laranja do coletivo', desc: 'A mesma que puxa o pelotão.', preco: null, status: 'em-breve', estoque: 0, img: 'fotos/after-out/11_t.jpg' },
-      { id: 'p4', nome: 'Boné CLLTV', desc: 'Peça em estudo pela coordenação.', preco: null, status: 'em-breve', estoque: 0, img: 'fotos/girls-moma/09_t.jpg' }
+      { id: 'p1', nome: 'Camiseta CLLTV RNNRS', cat: 'Camisetas', desc: 'A camisa do corre, com a marca nas costas. Preta ou branca, que é o dress code dos encontros.', preco: 89.9, status: 'disponivel', drop: '', limitada: false,
+        cores: ['Preta', 'Branca'], tamanhos: { PP: 4, P: 10, M: 14, G: 12, GG: 6 }, imgs: ['fotos/loja/camiseta-costas.jpg', 'fotos/loja/camiseta-uv.jpg', 'fotos/loja/camiseta-corre.jpg'] },
+      { id: 'p2', nome: 'Camiseta MOMA & Collective', cat: 'Collabs', desc: 'Edição limitada da collab com a MOMA Cookie Lab, do corre das meninas de 15/11.', preco: 99.9, status: 'esgotado', drop: '', limitada: true,
+        cores: ['Branca'], tamanhos: { P: 0, M: 0, G: 0 }, imgs: ['fotos/loja/moma-costas.jpg', 'fotos/loja/moma-frente.jpg'] },
+      { id: 'p3', nome: 'Boné CLLTV', cat: 'Acessórios', desc: 'Pra correr no sol de Salvador sem perder o estilo.', preco: 69.9, status: 'disponivel', drop: '', limitada: false,
+        cores: ['Branco'], tamanhos: { 'Único': 15 }, imgs: ['fotos/loja/bone.jpg'] },
+      { id: 'p4', nome: 'Kit de adesivos', cat: 'Acessórios', desc: 'Os adesivos do coletivo pra garrafa, notebook e capacete.', preco: 15, status: 'disponivel', drop: '', limitada: false,
+        cores: [], tamanhos: { 'Kit': 40 }, imgs: ['fotos/loja/adesivos.jpg'] },
+      { id: 'p5', nome: 'Bandeira do coletivo', cat: 'Acessórios', desc: 'A bandeira laranja que puxa o pelotão. Pra levar pra prova, pro baile e pra parede.', preco: 120, status: 'disponivel', drop: '', limitada: true,
+        cores: ['Laranja'], tamanhos: { 'Única': 5 }, imgs: ['fotos/loja/bandeira.jpg'] },
+      { id: 'p6', nome: 'Camiseta After Night', cat: 'Camisetas', desc: 'Drop do After Night Rnnrs, pra quem corre de noite. Membros compram antes.', preco: 99.9, status: 'drop', drop: '2026-12-05T19:00', limitada: true,
+        cores: ['Preta'], tamanhos: { P: 8, M: 12, G: 10, GG: 4 }, imgs: ['fotos/loja/after-night.jpg'] }
+    ],
+    pedidos: [
+      { id: 'CR-1042', data: '2026-11-22T10:14', nome: 'Pedido Demo', wpp: '(71) 90000-0001', itens: [{ p: 'p1', cor: 'Preta', tam: 'M', qt: 1, preco: 89.9 }, { p: 'p4', cor: '', tam: 'Kit', qt: 2, preco: 15 }], entrega: 'corre', membro: true, desconto: 12, total: 107.9, status: 'pago' },
+      { id: 'CR-1043', data: '2026-11-23T18:40', nome: 'Outro Pedido Demo', wpp: '(71) 90000-0002', itens: [{ p: 'p3', cor: 'Branco', tam: 'Único', qt: 1, preco: 69.9 }], entrega: 'corre', membro: false, desconto: 0, total: 69.9, status: 'novo' }
     ],
     parceiros: [
       { nome: 'Zerezes', cupom: 'ZS-CRUNNERS', desconto: '10%', link: 'https://zerezes.com.br/' },
@@ -121,6 +139,32 @@
     function fechar() { el.classList.remove('on'); document.body.style.overflow = ''; }
     mostrar(); el.classList.add('on'); document.body.style.overflow = 'hidden';
   };
+
+  /* ===== Loja ===== */
+  CR.reais = v => 'R$ ' + Number(v || 0).toFixed(2).replace('.', ',');
+  CR.estoque = p => Object.values(p.tamanhos || {}).reduce((s, n) => s + (+n || 0), 0);
+  CR.membroLogado = () => { const s = CR.sessao.get('membro'); return s && db.membros.find(m => m.id === s.id && m.status === 'ativo') || null; };
+  CR.precoMembro = p => Math.round(p.preco * (100 - (db.config.descontoMembro || 0))) / 100;
+  // drop: aberto pra membro 24h antes, pra todo mundo na hora marcada
+  CR.estadoDrop = (p, membro) => {
+    if (p.status !== 'drop' || !p.drop) return 'aberto';
+    const t = new Date(p.drop) - new Date();
+    if (t <= 0) return 'aberto';
+    if (membro && t <= 864e5) return 'aberto';
+    return 'fechado';
+  };
+  // Pix copia-e-cola (BR Code estático, padrão EMV do Banco Central)
+  CR.pix = (valor, txid) => {
+    const c = db.config, f = (id, v) => id + String(v.length).padStart(2, '0') + v;
+    const limpa = (s, n) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().slice(0, n);
+    const conta = f('00', 'br.gov.bcb.pix') + f('01', c.pixChave);
+    let p = f('00', '01') + f('26', conta) + f('52', '0000') + f('53', '986') + f('54', Number(valor).toFixed(2)) + f('58', 'BR') + f('59', limpa(c.pixNome, 25)) + f('60', limpa(c.pixCidade, 15)) + f('62', f('05', (txid || '***').replace(/[^A-Za-z0-9]/g, '').slice(0, 25))) + '6304';
+    let crc = 0xFFFF;
+    for (let i = 0; i < p.length; i++) { crc ^= p.charCodeAt(i) << 8; for (let j = 0; j < 8; j++) crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) & 0xFFFF : (crc << 1) & 0xFFFF; }
+    return p + crc.toString(16).toUpperCase().padStart(4, '0');
+  };
+  CR.STATUS_PEDIDO = { novo: 'Aguardando pagamento', pago: 'Pago', separado: 'Separado', entregue: 'Entregue', cancelado: 'Cancelado' };
+  CR.ENTREGA = { corre: 'Retirar no próximo corre', coord: 'Retirar com a coordenação', salvador: 'Entrega em Salvador (a combinar)' };
 
   window.CR = CR;
 })();

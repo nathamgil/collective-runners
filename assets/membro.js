@@ -111,6 +111,9 @@
     $('#stats').innerHTML = `<div><b>${feitos.length}</b><span>corres</span></div><div><b>${km}</b><span>km com a crew</span></div><div><b>${(db.confirmacoes[CR.proximos()[0]?.id] || []).includes(eu.id) ? '✓' : '—'}</b><span>no próximo</span></div>`;
     const tem = t => feitos.some(c => c.tipo === t);
     const selos = [['Primeiro corre', feitos.length >= 1], ['Corujão (noturno)', tem('Noturno')], ['CLLTV Girls', tem('Girls')], ['Cultura', tem('Cultural')], ['Pelotão firme (3+)', feitos.length >= 3], ['Puxador (10+)', feitos.length >= 10]];
+    $('#benef').textContent = `Você paga ${db.config.descontoMembro}% menos em todas as peças e compra os drops 24 horas antes de abrir pra todo mundo.`;
+    const meus = db.pedidos.filter(p => p.membroId === eu.id);
+    $('#meusPed').innerHTML = meus.length ? '<b class="titulo" style="font-size:24px">Meus pedidos</b>' + meus.map(p => `<a class="selo-c" style="display:flex;justify-content:space-between;margin-top:8px;text-decoration:none" href="loja.html#pedido=${p.id}"><span>${p.id}</span><span>${CR.STATUS_PEDIDO[p.status]}</span></a>`).join('') : '';
     $('#selos').innerHTML = selos.map(([t, ok]) => `<span class="selo-c${ok ? '' : ' off'}">${ok ? '★ ' : ''}${t}</span>`).join('');
   }
 

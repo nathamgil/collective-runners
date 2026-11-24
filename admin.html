@@ -9,8 +9,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%23111'/%3E%3Ctext x='32' y='42' font-size='26' text-anchor='middle' fill='%23E8361A' font-family='Arial Black' font-style='italic'%3ECR%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;0,800;1,800;1,900&family=Barlow:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/base.css?v=20261124142551">
-<link rel="stylesheet" href="assets/app.css?v=20261124142551">
+<link rel="stylesheet" href="assets/base.css?v=20261124152021">
+<link rel="stylesheet" href="assets/app.css?v=20261124152021">
 </head>
 <body class="app">
 
@@ -43,7 +43,8 @@
       <button role="tab" data-aba="agenda" aria-selected="false">Agenda</button>
       <button role="tab" data-aba="dossie" aria-selected="false">Dossiê</button>
       <button role="tab" data-aba="membros" aria-selected="false">Membros <span class="n" id="nPend"></span></button>
-      <button role="tab" data-aba="loja" aria-selected="false">Loja</button>
+      <button role="tab" data-aba="pedidos" aria-selected="false">Pedidos <span class="n" id="nPed"></span></button>
+      <button role="tab" data-aba="loja" aria-selected="false">Peças</button>
       <button role="tab" data-aba="parceiros" aria-selected="false">Parceiros</button>
       <button role="tab" data-aba="config" aria-selected="false">Config</button>
     </div>
@@ -116,22 +117,37 @@
       <div class="rolagem-x"><table class="tabela" id="tabMembros"></table></div>
     </section>
 
+    <section class="painel-sec" data-sec="pedidos" hidden>
+      <div class="cab-sec"><h2>Pedidos</h2><p>Confere o Pix no extrato, marca como pago, separa e entrega no corre. Cancelar devolve as peças pro estoque.</p></div>
+      <div class="kpis" id="kpisLoja"></div>
+      <div class="filtros-p" id="filtrosPed"></div>
+      <div class="rolagem-x"><table class="tabela" id="tabPedidos"></table></div>
+      <div class="caixa-p" style="margin-top:24px">
+        <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center"><h3 style="margin:0">Lista de retirada do próximo corre</h3><button class="btn peq" id="imprimirRet">Imprimir</button></div>
+        <div id="retirada" style="margin-top:12px"></div>
+      </div>
+    </section>
+
     <section class="painel-sec" data-sec="loja" hidden>
-      <div class="cab-sec"><h2>Loja</h2><p>O começo do marketplace do coletivo: cadastre a peça, defina status e preço, acompanhe reservas e lista de espera.</p></div>
+      <div class="cab-sec"><h2>Peças</h2><p>Cadastre a peça com estoque por tamanho. “Drop” abre numa data marcada, com 24h de vantagem pros membros.</p></div>
       <form class="caixa-p" id="formProd" style="margin-bottom:22px">
         <h3 id="prodTit">Nova peça</h3><input type="hidden" id="prodId">
         <div class="form-grade">
           <div class="campo"><label for="prodNome">Nome</label><input id="prodNome" required></div>
-          <div class="campo"><label for="prodStatus">Status</label><select id="prodStatus"><option value="em-breve">Em breve</option><option value="disponivel">Disponível</option><option value="esgotado">Esgotado</option></select></div>
+          <div class="campo"><label for="prodCat">Categoria</label><input id="prodCat" list="cats" required placeholder="Camisetas"><datalist id="cats"><option>Camisetas</option><option>Collabs</option><option>Acessórios</option></datalist></div>
+          <div class="campo"><label for="prodStatus">Status</label><select id="prodStatus"><option value="disponivel">Disponível</option><option value="drop">Drop (abre numa data)</option><option value="em-breve">Em breve</option><option value="esgotado">Esgotado</option></select></div>
+          <div class="campo"><label for="prodDrop">Abertura do drop</label><input id="prodDrop" type="datetime-local"></div>
           <div class="campo"><label for="prodPreco">Preço (R$)</label><input id="prodPreco" type="number" step="0.01" min="0" placeholder="vazio = a definir"></div>
-          <div class="campo"><label for="prodEstoque">Estoque</label><input id="prodEstoque" type="number" min="0" value="0"></div>
+          <div class="campo"><label for="prodCores">Cores (separadas por vírgula)</label><input id="prodCores" placeholder="Preta, Branca"></div>
+          <div class="campo inteiro"><label for="prodTams">Estoque por tamanho</label><input id="prodTams" required placeholder="P:10, M:14, G:12  ·  ou  Único:15"></div>
           <div class="campo inteiro"><label for="prodDesc">Descrição</label><input id="prodDesc"></div>
-          <div class="campo inteiro"><label for="prodImg">Foto (arquivo)</label><input id="prodImg" type="file" accept="image/*"></div>
+          <div class="campo inteiro"><label for="prodImg">Fotos (pode escolher várias)</label><input id="prodImg" type="file" accept="image/*" multiple></div>
         </div>
+        <label class="check" style="margin-bottom:14px"><input type="checkbox" id="prodLim"> Edição limitada (mostra “restam X”)</label>
         <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn brasa">Salvar peça</button><button type="button" class="btn vazado" id="prodLimpar">Limpar</button></div>
       </form>
       <div class="rolagem-x" style="margin-bottom:28px"><table class="tabela" id="tabProd"></table></div>
-      <h3 class="titulo" style="font-size:34px;margin-bottom:12px">Reservas e lista de espera</h3>
+      <h3 class="titulo" style="font-size:34px;margin-bottom:12px">Lista de espera</h3>
       <div class="rolagem-x"><table class="tabela" id="tabEspera"></table></div>
     </section>
 
@@ -159,6 +175,13 @@
           <div class="campo"><label for="cfTiktok">TikTok</label><input id="cfTiktok" type="url"></div>
           <div class="campo"><label for="cfCod">Código de entrada dos membros</label><input id="cfCod" required></div>
           <div class="campo"><label for="cfPin">PIN do painel</label><input id="cfPin" required></div>
+          <div class="campo"><label for="cfPix">Chave Pix da loja</label><input id="cfPix"></div>
+          <div class="campo"><label for="cfPixNome">Nome no Pix</label><input id="cfPixNome"></div>
+          <div class="campo"><label for="cfWppLoja">WhatsApp da loja (recebe comprovante)</label><input id="cfWppLoja" inputmode="tel" placeholder="71999990000"></div>
+          <div class="campo"><label for="cfDesc">Desconto de membro (%)</label><input id="cfDesc" type="number" min="0" max="50"></div>
+        </div>
+        <label class="check" style="margin:4px 0 14px"><input type="checkbox" id="cfDemo"> Mostrar aviso de loja em demonstração</label>
+        <div class="form-grade" hidden>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn brasa">Salvar</button><button type="button" class="btn vazado" id="resetar">Restaurar dados da demo</button></div>
       </form>
@@ -167,7 +190,7 @@
 </div>
 
 <div class="toast" id="toast" role="status"></div>
-<script src="assets/dados.js?v=20261124142551"></script>
-<script src="assets/admin.js?v=20261124142551"></script>
+<script src="assets/dados.js?v=20261124152021"></script>
+<script src="assets/admin.js?v=20261124152021"></script>
 </body>
 </html>
